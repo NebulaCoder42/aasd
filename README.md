@@ -1,14 +1,9 @@
--- Gui Creation
+--// Internal UI Script Hub by ChatGPT
+--// Compatible con KRNL, Fluxus, Electron, etc. No necesita Attach
+
 local ScreenGui = Instance.new("ScreenGui", game.CoreGui)
 ScreenGui.Name = "InternalScriptHub"
 
--- Dependencies
-local UIS = game:GetService("UserInputService")
-local HttpService = game:GetService("HttpService")
-local Players = game:GetService("Players")
-local LocalPlayer = Players.LocalPlayer
-
--- Main Frame
 local MainFrame = Instance.new("Frame", ScreenGui)
 MainFrame.Size = UDim2.new(0, 600, 0, 400)
 MainFrame.Position = UDim2.new(0.5, -300, 0.5, -200)
@@ -17,7 +12,6 @@ MainFrame.BorderSizePixel = 0
 MainFrame.Active = true
 MainFrame.Draggable = true
 
--- Tabs
 local Tabs = Instance.new("Frame", MainFrame)
 Tabs.Size = UDim2.new(0, 120, 1, 0)
 Tabs.BackgroundColor3 = Color3.fromRGB(25, 25, 25)
@@ -35,13 +29,11 @@ local function createTab(name)
 	return btn
 end
 
--- Tab Buttons
 local ScriptHubBtn = createTab("Script Hub")
 local ExecutorBtn = createTab("Executor")
 local ConsoleBtn = createTab("Console")
 local SettingsBtn = createTab("Settings")
 
--- Content Frame
 local ContentFrame = Instance.new("Frame", MainFrame)
 ContentFrame.Position = UDim2.new(0, 120, 0, 0)
 ContentFrame.Size = UDim2.new(1, -120, 1, 0)
@@ -53,11 +45,10 @@ local function clearContent()
 	end
 end
 
-----------------------
--- SCRIPT HUB PANEL --
-----------------------
+-- SCRIPT HUB
 local function loadScriptHub()
 	clearContent()
+
 	local label = Instance.new("TextLabel", ContentFrame)
 	label.Size = UDim2.new(1, 0, 0, 40)
 	label.Text = "Script Hub"
@@ -88,9 +79,7 @@ local function loadScriptHub()
 	end
 end
 
-----------------------
--- EXECUTOR PANEL ---
-----------------------
+-- EXECUTOR
 local function loadExecutor()
 	clearContent()
 
@@ -99,9 +88,7 @@ local function loadExecutor()
 	textBox.Position = UDim2.new(0, 10, 0, 10)
 	textBox.TextXAlignment = Enum.TextXAlignment.Left
 	textBox.TextYAlignment = Enum.TextYAlignment.Top
-	textBox.TextWrapped = true
 	textBox.ClearTextOnFocus = false
-	textBox.TextEditable = true
 	textBox.MultiLine = true
 	textBox.Font = Enum.Font.Code
 	textBox.TextSize = 14
@@ -116,13 +103,13 @@ local function loadExecutor()
 	execBtn.BackgroundColor3 = Color3.fromRGB(40, 100, 40)
 	execBtn.TextColor3 = Color3.new(1,1,1)
 	execBtn.MouseButton1Click:Connect(function()
-		loadstring(textBox.Text)()
+		pcall(function()
+			loadstring(textBox.Text)()
+		end)
 	end)
 end
 
--------------------
--- CONSOLE PANEL --
--------------------
+-- CONSOLE
 local function loadConsole()
 	clearContent()
 
@@ -146,9 +133,7 @@ local function loadConsole()
 	log("Script cargado correctamente.")
 end
 
---------------------
--- SETTINGS PANEL --
---------------------
+-- SETTINGS
 local function loadSettings()
 	clearContent()
 
@@ -170,11 +155,11 @@ local function loadSettings()
 	end)
 end
 
--- Button Clicks
+-- Tab Connections
 ScriptHubBtn.MouseButton1Click:Connect(loadScriptHub)
 ExecutorBtn.MouseButton1Click:Connect(loadExecutor)
 ConsoleBtn.MouseButton1Click:Connect(loadConsole)
 SettingsBtn.MouseButton1Click:Connect(loadSettings)
 
--- Load default tab
+-- Default tab
 loadScriptHub()
